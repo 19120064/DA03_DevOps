@@ -1,5 +1,4 @@
 node {
-    def docker_credential = "docker"
     def project = "devops"
 
 	def app
@@ -20,7 +19,7 @@ node {
 	}
 
 	stage('Push') {
-		docker.withRegistry("https://registry.hub.docker.com", "${docker_credential}") {
+		docker.withRegistry("https://registry.hub.docker.com", "Docker") {
 			app.push("${env.BUILD_ID}") // push images with new tag to docker hub
 			app.push("latest") // change the latest tag to it
 		}
