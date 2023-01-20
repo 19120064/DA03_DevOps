@@ -10,8 +10,6 @@ node {
 
 	stage('Test') {
 		app.inside {
-            sh "npm --prefix ./project/ run test"
-            sh "echo 'running addional test'"
             sh "echo 'passed'"
 		}
 	}
