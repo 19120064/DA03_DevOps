@@ -1,9 +1,9 @@
 pipeline 
 {
 	agent any
-	node 
+	stages
 	{
-		def dockerCredentials = "Docker"
+		// def dockerCredentials = "Docker"
 		stage('Clone') 
 		{
 			checkout scm
@@ -17,11 +17,13 @@ pipeline
 			}
 		}
 
-		stage('Test') {
-			app.inside {
+		stage('Test') 
+		{
 				sh "echo 'passed'"
-			}
 		}
+	}
+
+
 	
 		// stage('Push image to DockerHub') 
 		// {
@@ -33,7 +35,8 @@ pipeline
 		// 		}		
 		// 	}
 		// }
-
+	// node 
+	// {
 		// stage('Deploy')
 		// {
 		// 	try 
@@ -46,10 +49,8 @@ pipeline
 		// 		app.run("--rm --name devops_demo -p 8081:3000")
 		// 	}
 		// }
-	}
-
-
 }
+
 
 // node {
 // 	def app
