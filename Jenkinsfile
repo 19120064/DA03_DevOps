@@ -6,7 +6,10 @@ pipeline
 		// def dockerCredentials = "Docker"
 		stage('Clone') 
 		{
-			checkout scm
+			steps
+			{
+				checkout scm
+			}
 		}
 
 		stage('Build Docker image') 
@@ -19,7 +22,11 @@ pipeline
 
 		stage('Test') 
 		{
+			steps
+			{
 				sh "echo 'passed'"
+			}
+				
 		}
 	}
 
