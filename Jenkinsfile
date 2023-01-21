@@ -38,21 +38,5 @@ pipeline
 			}
 		}
 	}
-
-	node 
-	{
-		stage('Deploy')
-		{
-			try 
-			{
-				sh "docker kill devops_demo"
-			}
-			catch (exe) {}
-			finally 
-			{
-				app.run("--rm --name devops_demo -p 8081:3000")
-			}
-		}
-	}
 }
 
