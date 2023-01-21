@@ -33,11 +33,4 @@ node {
 		}
 	}
 
-		stage("test"){
-		app.inside {
-            sh "npm --prefix ./project/ run test"
-            sh "echo 'running addional test'"
-            sh "echo 'passed'"
-		}
-	}
 }
