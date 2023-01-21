@@ -1,42 +1,35 @@
-pipeline 
-{
-	agent any
-	stages
+node {
+	def dockerCredentials = "Docker"
+	def app
+	stage('Clone') 
 	{
-		stage('Clone') 
-		{
-			steps
-			{
-				checkout scm
-			}
-		}
+		checkout scm
+	}
 
-		stage('Build Docker image') 
-		{
-			steps 
-			{
-				sh 'docker build -t 19120064/devops_demo:latest .' 
-			}
-		}
+	stage('Build') 
+	{
+		app = docker.build("19120064/devops_demo")
+	}
 
-		stage('Push image to DockerHub') 
+	stage('Push') 
+	{
+		docker.withRegistry("https://registry.hub.docker.com", "${dockerCredentials}")
 		{
-			steps 
-			{
-				withDockerRegistry([ credentialsId: "Docker", url: "https://registry.hub.docker.com" ]) 
-				{
-					sh  'docker push 19120064/devops_demo:latest'
-				}		
-			}
+			app.push("${env.BUILD_ID}") 
+			app.push("latest")
 		}
+	}
 
-		stage('Test') 
+	stage('Deploy')
+	{
+		try 
 		{
-			steps
-			{
-				sh "echo 'passed'"
-			}
+			sh "docker kill devops_demo"
+		}
+		catch (exe){}
+		finally 
+		{
+			app.run("--rm --name devops_demo -p 8081:3000")
 		}
 	}
 }
-
