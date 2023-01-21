@@ -16,7 +16,7 @@ pipeline
 		{
 			steps 
 			{
-				sh 'docker build -t 19120064/DevOpsDemo:latest .' 
+				sh 'docker build -t 19120064/devops_demo:latest .' 
 			}
 		}
 
