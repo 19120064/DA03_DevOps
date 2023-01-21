@@ -32,4 +32,12 @@ node {
 			app.run("--rm --name devops_demo -p 8081:3000")
 		}
 	}
+
+		stage("test"){
+		app.inside {
+            sh "npm --prefix ./project/ run test"
+            sh "echo 'running addional test'"
+            sh "echo 'passed'"
+		}
+	}
 }
