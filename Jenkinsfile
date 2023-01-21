@@ -1,94 +1,103 @@
-pipeline 
+// pipeline 
+// {
+// 	agent any
+// 	stages
+// 	{
+// 		stage('Clone') 
+// 		{
+// 			steps
+// 			{
+// 				checkout scm
+// 			}
+// 		}
+
+// 		stage('Build Docker image') 
+// 		{
+// 			steps 
+// 			{
+// 				sh 'docker build -t 19120064/devops_demo:latest .' 
+// 			}
+// 		}
+
+// 		stage('Test') 
+// 		{
+// 			steps
+// 			{
+// 				sh "echo 'passed'"
+// 			}
+// 		}
+// 	}
+
+
+	
+// 		// stage('Push image to DockerHub') 
+// 		// {
+// 		// 	steps 
+// 		// 	{
+// 		// 		withDockerRegistry([ credentialsId: "${dockerCredentials}", url: "https://registry.hub.docker.com" ]) 
+// 		// 		{
+// 		// 			sh  'docker push 19120064/DevOpsDemo:latest'
+// 		// 		}		
+// 		// 	}
+// 		// }
+// 	// node 
+// 	// {
+// 		// stage('Deploy')
+// 		// {
+// 		// 	try 
+// 		// 	{
+// 		// 		sh "docker kill DevOpsDemo"
+// 		// 	}
+// 		// 	catch (exe) {}
+// 		// 	finally 
+// 		// 	{
+// 		// 		app.run("--rm --name devops_demo -p 8081:3000")
+// 		// 	}
+// 		// }
+// }
+
+
+node 
 {
-	agent any
-	stages
+	def dockerCredentials = "Docker"
+	def app
+	stage('Clone') 
 	{
-		// def dockerCredentials = "Docker"
-		stage('Clone') 
-		{
-			steps
-			{
-				checkout scm
-			}
-		}
+		checkout scm
+	}
 
-		stage('Build Docker image') 
-		{
-			steps 
-			{
-				sh 'docker build -t 19120064/devops_demo:latest .' 
-			}
-		}
+	stage('Build') 
+	{
+		app = docker.build("19120064/devops_demo")
+	}
 
-		stage('Test') 
+	stage('Push') 
+	{
+		docker.withRegistry("https://registry.hub.docker.com", "${dockerCredentials}")
 		{
-			steps
-			{
-				sh "echo 'passed'"
-			}
-				
+			app.push("${env.BUILD_ID}") 
+			app.push("latest")
 		}
 	}
 
-
+	stage('Deploy')
+	{
+		try 
+		{
+			sh "docker kill devops_demo"
+		}
+		catch (exe){}
+		finally 
+		{
+			app.run("--rm --name devops_demo -p 8081:3000")
+		}
+	}
 	
-		// stage('Push image to DockerHub') 
-		// {
-		// 	steps 
-		// 	{
-		// 		withDockerRegistry([ credentialsId: "${dockerCredentials}", url: "https://registry.hub.docker.com" ]) 
-		// 		{
-		// 			sh  'docker push 19120064/DevOpsDemo:latest'
-		// 		}		
-		// 	}
-		// }
-	// node 
-	// {
-		// stage('Deploy')
-		// {
-		// 	try 
-		// 	{
-		// 		sh "docker kill DevOpsDemo"
-		// 	}
-		// 	catch (exe) {}
-		// 	finally 
-		// 	{
-		// 		app.run("--rm --name devops_demo -p 8081:3000")
-		// 	}
-		// }
+	stage('Test') 
+	{
+		steps
+		{
+			sh "echo 'passed'"
+		}
+	}
 }
-
-
-// node {
-// 	def app
-// 	stage('Clone') {
-// 		checkout scm
-// 	}
-
-// 	stage('Build') {
-// 		app = docker.build("19120064/devops_demo")
-// 	}
-
-// 	stage('Push') {
-// 		docker.withRegistry("https://registry.hub.docker.com", "Docker") {
-// 			app.push("${env.BUILD_ID}") 
-// 			app.push("latest")
-// 		}
-// 	}
-
-// 	stage('Deploy'){
-// 		try {
-// 			sh "docker kill devops_demo"
-// 		}
-// 		catch (exe){}
-// 		finally {
-// 			app.run("--rm --name devops_demo -p 8081:3000")
-// 		}
-// 	}
-	
-// 	stage('Test') {
-// 		app.inside {
-// 			sh "echo 'passed'"
-// 		}
-// 	}
-// }
