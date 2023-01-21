@@ -22,7 +22,7 @@ pipeline
 				sh "echo 'passed'"
 			}
 		}
-	}
+	
 		// stage('Push image to DockerHub') 
 		// {
 		// 	steps 
